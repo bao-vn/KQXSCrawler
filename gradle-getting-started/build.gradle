@@ -1,0 +1,50 @@
+buildscript {
+	ext {
+		springBootVersion = '2.3.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.example'
+version = '1.0'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'org.webjars:jquery:3.3.1-1'
+	runtimeOnly 'org.webjars:jquery-ui:1.12.1'
+	runtimeOnly 'org.webjars:bootstrap:4.1.3'
+	runtimeOnly 'org.webjars:webjars-locator:0.38'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// my gradle
+	implementation group: 'org.json', name: 'json', version: '20090211'
+	// https://mvnrepository.com/artifact/com.rometools/rome
+	implementation group: 'com.rometools', name: 'rome', version: '1.15.0'
+	// https://projectlombok.org/setup/gradle
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	testCompileOnly 'org.projectlombok:lombok:1.18.16'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	// Heroku tutorial
+	compile "org.jscience:jscience:4.3.1"
+}
