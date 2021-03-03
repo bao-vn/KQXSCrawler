@@ -24,7 +24,7 @@ public class KQXSController {
     @Autowired
     private Parse2JsonService parse2JsonService;
 
-    @RequestMapping("/kqxs/json")
+    @RequestMapping("/kqxs/mien-bac")
     public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException {
         String url = "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss";;
         URL feedUrl = new URL(url);
@@ -34,12 +34,38 @@ public class KQXSController {
         // parse to json
         List<KQXSDto> kqxsDtos = new ArrayList<>();
 
-        for (SyndEntry entry : (List<SyndEntry>) feed.getEntries()) {
-            KQXSDto kqxsDto = new KQXSDto();
-            kqxsDto.setTitle(entry.getTitle());
-            kqxsDto.setDescription(parse2JsonService.string2KQXSDescription(entry.getDescription().getValue()));
-            kqxsDto.setLink(entry.getLink());
-            kqxsDto.setPublishedDate(entry.getPublishedDate());
+        for (SyndEntry entry : feed.getEntries()) {
+            KQXSDto kqxsDto = KQXSDto.builder()
+                    .title(entry.getTitle())
+                    .description(parse2JsonService.string2KQXSDescription("Xổ số kiến thiết miền Bắc", entry.getDescription().getValue()))
+                    .link(entry.getLink())
+                    .publishedDate(entry.getPublishedDate())
+                    .build();
+
+            kqxsDtos.add(kqxsDto);
+        }
+
+        return new ResponseEntity<>(kqxsDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping("/kqxs/mien-nam")
+    public ResponseEntity<List<KQXSDto>> parseKQXSMienNam() throws IOException, FeedException {
+        String url = "https://xskt.com.vn/rss-feed/mien-nam-xsmn.rss";;
+        URL feedUrl = new URL(url);
+        SyndFeedInput input = new SyndFeedInput();
+        SyndFeed feed = input.build(new XmlReader((feedUrl)));
+
+        // parse to json
+        List<KQXSDto> kqxsDtos = new ArrayList<>();
+
+        for (SyndEntry entry : feed.getEntries()) {
+            List prizeList = parse2JsonService.multipleString2KQXSDescription(entry.getDescription().getValue());
+            KQXSDto kqxsDto = KQXSDto.builder()
+                    .title(entry.getTitle())
+                    .description(parse2JsonService.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
+                    .link(entry.getLink())
+                    .publishedDate(entry.getPublishedDate())
+                    .build();
 
             kqxsDtos.add(kqxsDto);
         }
