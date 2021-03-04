@@ -1,16 +1,18 @@
 package com.example.heroku.service;
 
+import com.example.heroku.common.CommonUtils;
 import com.example.heroku.dto.XoSoKienThiet;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class Parse2JsonService {
-    private final String[] PRIZE_NAME = {"Đặc biệt", "Giải nhất", "Giải nhì", "Giải ba", "Giải tư", "Giải năm", "Giải sáu", "Giải bảy", "Giải tám"};
+    @Autowired
+    private CommonUtils commonUtils;
 
     public XoSoKienThiet string2KQXSDescription(String companyName, String results) {
         // Reflection Description
@@ -20,21 +22,27 @@ public class Parse2JsonService {
         String[] split = results.split("\n");
         int indexPrizeName = 0;
         for (String item: split) {
-            if (StringUtils.isEmpty(item)) {
+            if (StringUtils.isEmpty(item) || StringUtils.isBlank(item)) {
                 continue;
             }
 
             // index of prizeName
             String[] resultWithTitlePrize = item.split(":");
 
-            if (resultWithTitlePrize.length != 2
-                    || (StringUtils.isEmpty(resultWithTitlePrize[0])
-                    && StringUtils.isEmpty(resultWithTitlePrize[1]))) {
+            if (resultWithTitlePrize.length < 2
+                    || ((StringUtils.isEmpty(resultWithTitlePrize[0]) || StringUtils.isBlank(resultWithTitlePrize[0]))
+                    && (StringUtils.isEmpty(resultWithTitlePrize[1]) || StringUtils.isBlank(resultWithTitlePrize[1])))) {
                 continue;
             }
 
             String prize = resultWithTitlePrize[1];
-            prizeList[indexPrizeName]=prize;
+            prizeList[indexPrizeName] = prize.trim();
+
+            // GiaiTam
+            if (resultWithTitlePrize.length == 3 && indexPrizeName == 7
+                    && !commonUtils.isEmptyOrWhiteSpaces(resultWithTitlePrize[2])) {
+                prizeList[indexPrizeName + 1] = resultWithTitlePrize[2].trim();
+            }
             indexPrizeName++;
         }
 
@@ -61,15 +69,15 @@ public class Parse2JsonService {
         int indexPrizeName = 0;
         for (String item: splitByCompanyName) {
             // item = Cần Thơ] ĐB: 414303 1: 51374 2: 50151 3: 51102 - 31421 4: 77132 - 16282 - 27680 - 24815 - 84724 - 87059 - 08557 5: 2523 6: 6215 - 4816 - 7933 7: 2228: 06
-            if (StringUtils.isEmpty(item)) {
+            if (StringUtils.isEmpty(item) || StringUtils.isBlank(item)) {
                 continue;
             }
 
             // result = ["Cần Thơ"," ĐB: 414303 1: 51374 2: 50151 3: 51102 - 31421 4: 77132 - 16282 - 27680 - 24815 - 84724 - 87059 - 08557 5: 2523 6: 6215 - 4816 - 7933 7: 2228: 06"]
             String[] parseIntoResult = item.split("\\]");
-            if (parseIntoResult.length != 2
-                    || (StringUtils.isEmpty(parseIntoResult[0])
-                        && StringUtils.isEmpty(parseIntoResult[1]))
+            if (parseIntoResult.length < 2
+                    || (StringUtils.isEmpty(parseIntoResult[0]) || StringUtils.isBlank(parseIntoResult[0])
+                        && StringUtils.isEmpty(parseIntoResult[1]) || StringUtils.isBlank(parseIntoResult[1]))
             ) {
                 continue;
             }
