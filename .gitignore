@@ -25,7 +25,6 @@ hs_err_pid*
 # build gradle
 /.gradle
 /.idea
-gradle-getting-started/.gradle/6.4.1/executionHistory/
 gradle-getting-started/.gradle
 gradle-getting-started/.idea
 gradle-getting-started/**/build/
