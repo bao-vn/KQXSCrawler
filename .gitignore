@@ -23,40 +23,18 @@
 hs_err_pid*
 
 # build gradle
-# Gradle
-# ------
-.gradle
-/build
-/*/build
-/*/*/build
-/*/*/*/build
-/*/*/*/*/build
-/*/docs/src/samples/**/build
-/*/docs/src/snippets/**/build
-/*/internal-android-performance-testing/build-android-libs
-test-splits/
+gradle-getting-started/.gradle
+gradle-getting-started/**/build/
+gradle-getting-started/!src/**/build/
 
-# IDEA
-# ----
-!/.idea
-/.idea/*
-!/.idea/codeStyles
-!/.idea/inspectionProfiles
-!/.idea/icon.png
-!/.idea/icon_dark.png
-*/**/.idea
-*/**/.shelf
-.shelf
-/*.iml
-/*/*.iml
-/*/*/*.iml
-/*/*/*/*.iml
-/*/*/*/*/*.iml
-/out
-/*/out
-/*/*/out
-/*/*/*/out
-/*/*/*/*/out
-/.teamcity/target
-/gradle.ipr
-/gradle.iws
+# Ignore Gradle GUI config
+gradle-getting-started/gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+gradle-getting-started/!gradle-wrapper.jar
+
+# Cache of project
+gradle-getting-started/.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
