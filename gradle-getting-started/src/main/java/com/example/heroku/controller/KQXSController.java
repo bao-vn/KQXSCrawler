@@ -26,7 +26,8 @@ public class KQXSController {
 
     @RequestMapping("/kqxs/mien-bac")
     public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException {
-        String url = "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss";;
+//        String url = "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss";
+        String url = "https://xskt.com.vn/rss-feed/an-giang-xsag.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(new XmlReader((feedUrl)));

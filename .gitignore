@@ -25,7 +25,7 @@ hs_err_pid*
 # build gradle
 /.gradle
 /.idea
-gradle-getting-started/.gradle
+/gradle-getting-started/.gradle
 gradle-getting-started/.idea
 gradle-getting-started/**/build/
 gradle-getting-started/!src/**/build/
@@ -43,3 +43,4 @@ gradle-getting-started/.gradletasknamecache
 # gradle/wrapper/gradle-wrapper.properties
 gradlew.bat
 gradlew
+gradle-getting-started/.gradle
