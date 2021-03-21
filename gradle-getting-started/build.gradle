@@ -47,4 +47,8 @@ dependencies {
 
 	// Heroku tutorial
 	compile "org.jscience:jscience:4.3.1"
+
+	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+	implementation 'com.google.firebase:firebase-admin:7.1.1'
+
 }

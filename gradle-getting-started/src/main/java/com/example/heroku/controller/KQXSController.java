@@ -2,6 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.service.Parse2JsonService;
 import com.example.heroku.dto.KQXSDto;
+import com.example.heroku.service.ShowDbChanges;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -72,5 +73,20 @@ public class KQXSController {
         }
 
         return new ResponseEntity<>(kqxsDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping("/kqxs/main")
+    public ResponseEntity main(String[] args) throws IOException {
+
+        Thread t=new Thread(new ShowDbChanges());
+
+        t.run();
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
