@@ -1,6 +1,6 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.service.FireBaseService;
+import com.example.heroku.repository.FireBaseRepository;
 import com.example.heroku.service.Parse2JsonService;
 import com.example.heroku.dto.KQXSDto;
 import com.google.api.core.ApiFuture;
@@ -8,7 +8,6 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.firebase.database.FirebaseDatabase;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -37,7 +36,7 @@ public class KQXSController {
     private Parse2JsonService parse2JsonService;
 
     @Autowired
-    private FireBaseService fireBaseService;
+    private FireBaseRepository fireBaseService;
 
     @RequestMapping("/kqxs/mien-bac")
     public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException {
@@ -90,7 +89,6 @@ public class KQXSController {
 
     @RequestMapping("/kqxs/data")
     public ResponseEntity<Map<String, Object>> readData() throws ExecutionException, InterruptedException {
-        FirebaseDatabase realtimeDB = fireBaseService.getRealtimeDB();
         Firestore fireStore = fireBaseService.getFireStore();
 
         CollectionReference kqxsCrawler = fireStore.collection("KQXSCrawler");

@@ -1,4 +1,4 @@
-package com.example.heroku.service;
+package com.example.heroku.repository;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
@@ -7,7 +7,6 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.database.FirebaseDatabase;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,12 +14,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Service
-@AllArgsConstructor
-public class FireBaseService {
+public class FireBaseRepository {
     private FirebaseDatabase realtimeDB;
     private Firestore firestore;
 
-    public FireBaseService() throws IOException {
+    public FireBaseRepository() throws IOException {
         File file = new File("D:\\java\\key.json");
 
         FileInputStream serviceAccount = new FileInputStream(file);
