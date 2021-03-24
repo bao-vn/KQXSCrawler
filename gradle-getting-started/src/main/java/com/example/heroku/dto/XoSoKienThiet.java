@@ -22,8 +22,4 @@ public class XoSoKienThiet {
     private String GiaiSau;
     private String GiaiBay;
     private String GiaiTam;
-
-    public XoSoKienThiet(String resultSplitByColon) {
-
-    }
 }
