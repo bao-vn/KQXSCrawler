@@ -74,9 +74,12 @@ public class CrawlerService {
         StringBuilder pathDocument = new StringBuilder("tblBinhDinh");
         String url = "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss";
         List<KQXSDto> kqxsDtos = this.getKQXSFromRssLink(url);
-        pathDocument.append('/');
-        pathDocument.append(kqxsDtos.get(0).getPublishedDate());
 
-        fireBaseRepository.saveResults(pathDocument.toString(), kqxsDtos.get(0));
+        for (KQXSDto kqxsDto : kqxsDtos) {
+            pathDocument.append('/');
+            pathDocument.append(kqxsDto.getPublishedDate());
+            fireBaseRepository.saveResults(pathDocument.toString(), kqxsDtos.get(0));
+        }
+
     }
 }
