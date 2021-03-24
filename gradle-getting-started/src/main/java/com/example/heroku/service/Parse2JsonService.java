@@ -1,7 +1,11 @@
 package com.example.heroku.service;
 
 import com.example.heroku.common.CommonUtils;
+import com.example.heroku.dto.KQXSDto;
 import com.example.heroku.dto.XoSoKienThiet;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +18,14 @@ public class Parse2JsonService {
     @Autowired
     private CommonUtils commonUtils;
 
-    public XoSoKienThiet string2KQXSDescription(String companyName, String results) {
+    /**
+     * Parse rss data
+     *
+     * @param companyName
+     * @param results
+     * @return
+     */
+    public XoSoKienThiet string2KQXSDescription(String results) {
         // Reflection Description
         String[] prizeList = new String[9];
 
@@ -47,7 +58,7 @@ public class Parse2JsonService {
         }
 
         return XoSoKienThiet.builder()
-                .maCongTy(companyName)
+//                .maCongTy(companyName)
                 .GiaiDacBiet(prizeList[0])
                 .GiaiNhat(prizeList[1])
                 .GiaiNhi(prizeList[2])
@@ -60,6 +71,13 @@ public class Parse2JsonService {
                 .build();
     }
 
+    /**
+     * Parse rss data in case <description> tag contains multiple results.
+     * Example: https://xskt.com.vn/rss-feed/mien-nam-xsmn.rss
+     *
+     * @param description contains multiple results
+     * @return List<XoSoKienThiet> list of prize for each result
+     */
     public List<XoSoKienThiet> multipleString2KQXSDescription(String description) {
         // Reflection Description
         List<XoSoKienThiet> companyWithPrizeList = new ArrayList<>();
@@ -84,7 +102,7 @@ public class Parse2JsonService {
             String companyName = parseIntoResult[0];
             String result = parseIntoResult[1];
 
-            companyWithPrizeList.add(string2KQXSDescription(companyName, result));
+            companyWithPrizeList.add(string2KQXSDescription(result));
 
             indexPrizeName++;
         }

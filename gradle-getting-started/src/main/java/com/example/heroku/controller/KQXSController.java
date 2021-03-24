@@ -13,6 +13,7 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
+import java.text.SimpleDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,6 @@ public class KQXSController {
 
     @RequestMapping("/kqxs/mien-bac")
     public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException {
-//        String url = "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss";
         String url = "https://xskt.com.vn/rss-feed/an-giang-xsag.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
@@ -49,12 +49,13 @@ public class KQXSController {
         // parse to json
         List<KQXSDto> kqxsDtos = new ArrayList<>();
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
         for (SyndEntry entry : feed.getEntries()) {
             KQXSDto kqxsDto = KQXSDto.builder()
                     .title(entry.getTitle())
-                    .description(parse2JsonService.string2KQXSDescription("Xổ số kiến thiết miền Bắc", entry.getDescription().getValue()))
+                    .results(parse2JsonService.string2KQXSDescription(entry.getDescription().getValue()))
                     .link(entry.getLink())
-                    .publishedDate(entry.getPublishedDate())
+                    .publishedDate(formatter.format(entry.getPublishedDate()))
                     .build();
 
             kqxsDtos.add(kqxsDto);
@@ -72,13 +73,14 @@ public class KQXSController {
 
         // parse to json
         List<KQXSDto> kqxsDtos = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
         for (SyndEntry entry : feed.getEntries()) {
             KQXSDto kqxsDto = KQXSDto.builder()
                     .title(entry.getTitle())
-                    .description(parse2JsonService.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
+                    .results(parse2JsonService.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
                     .link(entry.getLink())
-                    .publishedDate(entry.getPublishedDate())
+                    .publishedDate(formatter.format(entry.getPublishedDate()))
                     .build();
 
             kqxsDtos.add(kqxsDto);
