@@ -1,7 +1,7 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.common.CommonUtils;
 import com.example.heroku.repository.FireBaseRepository;
-import com.example.heroku.service.Parse2JsonService;
 import com.example.heroku.dto.KQXSDto;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -13,7 +13,6 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import java.text.SimpleDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -34,13 +31,13 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api")
 public class KQXSController {
     @Autowired
-    private Parse2JsonService parse2JsonService;
-
-    @Autowired
     private FireBaseRepository fireBaseService;
 
+    @Autowired
+    private CommonUtils commonUtils;
+
     @RequestMapping("/kqxs/mien-bac")
-    public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException {
+    public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException, ParseException {
         String url = "https://xskt.com.vn/rss-feed/an-giang-xsag.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
@@ -49,13 +46,16 @@ public class KQXSController {
         // parse to json
         List<KQXSDto> kqxsDtos = new ArrayList<>();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
         for (SyndEntry entry : feed.getEntries()) {
+            // parse date from link
+            // Example: https://xskt.com.vn/xsag/ngay-18-3-2021
+            Date date = commonUtils.parseToLocalDateFromLink(entry.getLink());
+
             KQXSDto kqxsDto = KQXSDto.builder()
                     .title(entry.getTitle())
-                    .results(parse2JsonService.string2KQXSDescription(entry.getDescription().getValue()))
+                    .results(commonUtils.string2KQXSDescription(entry.getDescription().getValue()))
                     .link(entry.getLink())
-                    .publishedDate(formatter.format(entry.getPublishedDate()))
+                    .publishedDate(date)
                     .build();
 
             kqxsDtos.add(kqxsDto);
@@ -65,7 +65,7 @@ public class KQXSController {
     }
 
     @RequestMapping("/kqxs/mien-nam")
-    public ResponseEntity<List<KQXSDto>> parseKQXSMienNam() throws IOException, FeedException {
+    public ResponseEntity<List<KQXSDto>> parseKQXSMienNam() throws IOException, FeedException, ParseException {
         String url = "https://xskt.com.vn/rss-feed/mien-nam-xsmn.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
@@ -73,14 +73,17 @@ public class KQXSController {
 
         // parse to json
         List<KQXSDto> kqxsDtos = new ArrayList<>();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
         for (SyndEntry entry : feed.getEntries()) {
+            // parse date from link
+            // Example: https://xskt.com.vn/xsag/ngay-18-3-2021
+            Date date = commonUtils.parseToLocalDateFromLink(entry.getLink());
+
             KQXSDto kqxsDto = KQXSDto.builder()
                     .title(entry.getTitle())
-                    .results(parse2JsonService.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
+                    .results(commonUtils.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
                     .link(entry.getLink())
-                    .publishedDate(formatter.format(entry.getPublishedDate()))
+                    .publishedDate(date)
                     .build();
 
             kqxsDtos.add(kqxsDto);

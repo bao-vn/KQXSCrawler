@@ -69,7 +69,7 @@ public class FireBaseRepository {
         // convert to Map<String, Object>: KQXSDto, XoSoKienThiet
 
         Map<String, Object> kqxs = commonUtils.convertToMap(kqxsDtos);
-        kqxs.put("timestamp", FieldValue.serverTimestamp());
+        kqxs.put("updatedTime", FieldValue.serverTimestamp());
         documentReference.set(kqxs);
     }
 }
