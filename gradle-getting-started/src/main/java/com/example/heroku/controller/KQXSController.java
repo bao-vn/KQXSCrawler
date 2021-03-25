@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.common.CommonUtils;
 import com.example.heroku.repository.FireBaseRepository;
 import com.example.heroku.dto.KQXSDto;
+import com.example.heroku.service.HistoryService;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api")
 public class KQXSController {
     @Autowired
-    private FireBaseRepository fireBaseService;
+    private FireBaseRepository fireBaseRepository;
 
     @Autowired
     private CommonUtils commonUtils;
@@ -94,7 +97,7 @@ public class KQXSController {
 
     @RequestMapping("/kqxs/data")
     public ResponseEntity<Map<String, Object>> readData() throws ExecutionException, InterruptedException {
-        Firestore fireStore = fireBaseService.getFireStore();
+        Firestore fireStore = fireBaseRepository.getFireStore();
 
         CollectionReference kqxsCrawler = fireStore.collection("KQXSCrawler");
         DocumentReference anGiang = kqxsCrawler.document("AnGiang");
