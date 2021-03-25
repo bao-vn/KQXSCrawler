@@ -19,7 +19,7 @@ public class HistoryController {
 
 
     /**
-     *
+     * Get list of documentID
      *
      * @param colPath String
      * @return ResponseEntity<List<String>> list of document in collection
@@ -33,7 +33,14 @@ public class HistoryController {
         return new ResponseEntity<>(docPaths, HttpStatus.OK);
     }
 
-    // syncHistoryByCollectionID
+    /**
+     * Store all result collections by date when initiate database
+     *
+     * @param colPath String CollectionID
+     * @return ResponseEntity<String>
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @GetMapping("/doc/sync/{colPath}")
     public ResponseEntity<String> syncHistoryByCollectionID(@PathVariable("colPath") String colPath) throws ExecutionException, InterruptedException {
         historyService.syncHistoryByCollectionID(colPath);
