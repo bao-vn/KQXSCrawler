@@ -6,7 +6,12 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldValue;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.WriteResult;
+import java.io.IOException;
+import java.util.HashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +32,7 @@ public class CompanyService {
     @Autowired
     private CrawlerService crawlerService;
 
-    private static final String KQXS_COLLECTION = "KQXSCrawler";
+    private static final String KQXS_COLLECTION = "tblCompanies";
 
     /**
      * Get list of company from DB
@@ -68,7 +73,7 @@ public class CompanyService {
                 Map<String, Object> data = docSnapShot.getData();
 
                 if (data != null) {
-                    Object objCompanyId = data.get("maCongTy");
+                    Object objCompanyId = data.get("companyName");
                     Object objLink = data.get("link");
 
                     if (objCompanyId == null || objLink == null) {
@@ -90,11 +95,22 @@ public class CompanyService {
     }
 
 
-    public void saveCompany() {
-
+    public void saveCompany(String docPath, Company company) throws ExecutionException, InterruptedException {
+        Firestore firestore = fireBaseRepository.getFireStore();
+        CollectionReference colCompanies = firestore.collection("tblCompanies");
+        DocumentReference documentReference = colCompanies.document(docPath);
+        ApiFuture<WriteResult> initial = documentReference.set(company);
+        initial.get();
+        Map<String, Object> updatedTime = new HashMap<>();
+        updatedTime.put("updatedTime", FieldValue.serverTimestamp());
+        documentReference.set(updatedTime, SetOptions.merge());
     }
 
-    public void saveCompanies() {
+    public void saveCompanies() throws IOException, ExecutionException, InterruptedException {
+        List<Company> companies = crawlerService.crawlRssLinks();
 
+        for (Company company : companies) {
+            this.saveCompany(company.getCompanyName(), company);
+        }
     }
 }

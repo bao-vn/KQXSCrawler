@@ -31,7 +31,7 @@ public class CrawlerController {
 
     @GetMapping("/crawl")
     public ResponseEntity<List<Company>> crawlRssLinks() throws IOException {
-        List<Company> rssLinks = crawlerService.crawlRssLinks("");
+        List<Company> rssLinks = crawlerService.crawlRssLinks();
 
         return new ResponseEntity<>(rssLinks, HttpStatus.OK);
     }

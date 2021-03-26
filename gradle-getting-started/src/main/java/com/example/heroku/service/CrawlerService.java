@@ -43,6 +43,8 @@ public class CrawlerService {
     @Autowired
     private CompanyService companyService;
 
+    private final String URL = "https://xskt.com.vn/rss/";
+
     /**
      * Get KQXS from rss link
      *
@@ -121,16 +123,14 @@ public class CrawlerService {
     /**
      * Crawl data from rss links
      *
-     * @param url String
      * @return List<String>
      * @throws IOException connect to html by Jsoup
      */
-    public List<Company> crawlRssLinks(String url) throws IOException {
-        url = "https://xskt.com.vn/rss/";
+    public List<Company> crawlRssLinks() throws IOException {
         Proxy proxy = new Proxy(Proxy.Type.HTTP,
             new InetSocketAddress("127.0.0.1", 1080));
-        Connection connection = Jsoup.connect(url)
-            .proxy(proxy)
+        Connection connection = Jsoup.connect(URL)
+//            .proxy(proxy)
             .userAgent("Mozilla")
             .timeout(5000)
             .cookie("cookiename", "val234")
