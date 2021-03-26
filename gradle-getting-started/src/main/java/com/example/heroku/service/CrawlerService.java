@@ -3,6 +3,7 @@ package com.example.heroku.service;
 import com.example.heroku.common.CommonUtils;
 import com.example.heroku.dto.KQXSDto;
 import com.example.heroku.dto.XoSoKienThiet;
+import com.example.heroku.model.Company;
 import com.example.heroku.repository.FireBaseRepository;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.internal.FirebaseService;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,9 @@ public class CrawlerService {
 
     @Autowired
     private CommonUtils commonUtils;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * Get KQXS from rss link
@@ -76,17 +81,33 @@ public class CrawlerService {
         return kqxsDtos;
     }
 
-    public void save() throws IOException, FeedException, ParseException {
+    public void save(Company company) throws IOException, FeedException, ParseException {
         // format pathDocument = "tblBinhDinh/<yyyy-MM-dd>"
-        String url = "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss";
-        List<KQXSDto> kqxsDtos = this.getKQXSFromRssLink(url);
+//        String url = "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss";
+        List<KQXSDto> kqxsDtos = this.getKQXSFromRssLink(company.getLink());
 
         for (KQXSDto kqxsDto : kqxsDtos) {
-            StringBuilder pathDocument = new StringBuilder("tblBinhDinh");
-            pathDocument.append('/');
-            pathDocument.append(kqxsDto.getStrPublishedDate());
-            fireBaseRepository.saveResults(pathDocument.toString(), kqxsDto);
+            String pathDocument = company.getCompanyName()
+                + '/'
+                + kqxsDto.getStrPublishedDate();
+            fireBaseRepository.saveResults(pathDocument, kqxsDto);
         }
+    }
 
+    /**
+     * Crawl data from rss link in Companies table
+     *
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws ParseException
+     * @throws IOException
+     * @throws FeedException
+     */
+    public void crawlDataFromRssLink() throws ExecutionException, InterruptedException, ParseException, IOException, FeedException {
+        List<Company> companies = companyService.getCompanies();
+
+        for (Company company : companies) {
+            this.save(company);
+        }
     }
 }
