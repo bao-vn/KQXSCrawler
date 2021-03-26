@@ -13,6 +13,8 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -125,13 +127,17 @@ public class CrawlerService {
      */
     public List<Company> crawlRssLinks(String url) throws IOException {
         url = "https://xskt.com.vn/rss/";
-        Connection connection = Jsoup.connect(url);
-        connection.userAgent("Mozilla");
-        connection.timeout(5000);
-        connection.cookie("cookiename", "val234");
-        connection.cookie("cookiename", "val234");
-        connection.referrer("http://google.com");
-        connection.header("headersecurity", "xyz123");
+        Proxy proxy = new Proxy(Proxy.Type.HTTP,
+            new InetSocketAddress("127.0.0.1", 1080));
+        Connection connection = Jsoup.connect(url)
+            .proxy(proxy)
+            .userAgent("Mozilla")
+            .timeout(5000)
+            .cookie("cookiename", "val234")
+            .cookie("cookiename", "val234")
+            .referrer("http://google.com")
+            .header("headersecurity", "xyz123");
+
         Document docCustomConn = connection.get();
 
         // get with element id = "ulrss"
