@@ -19,6 +19,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 import java.util.concurrent.ExecutionException;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,5 +114,40 @@ public class CrawlerService {
         for (Company company : companies) {
             this.save(company);
         }
+    }
+
+    /**
+     * Crawl data from rss links
+     *
+     * @param url String
+     * @return List<String>
+     * @throws IOException connect to html by Jsoup
+     */
+    public List<Company> crawlRssLinks(String url) throws IOException {
+        url = "https://xskt.com.vn/rss/";
+        Connection connection = Jsoup.connect(url);
+        connection.userAgent("Mozilla");
+        connection.timeout(5000);
+        connection.cookie("cookiename", "val234");
+        connection.cookie("cookiename", "val234");
+        connection.referrer("http://google.com");
+        connection.header("headersecurity", "xyz123");
+        Document docCustomConn = connection.get();
+
+        // get with element id = "ulrss"
+        Elements elements = docCustomConn.select("#ulrss > li > a");
+
+        List<Company> rssLinks = new ArrayList<>();
+        String host = "https://xskt.com.vn/";
+        for (Element element : elements) {
+            String link = host + element.attr("href");
+            String companyName = commonUtils.parseCompanyNameFromTitleLink(element.text());
+            rssLinks.add(Company.builder()
+                .companyName(companyName)
+                .link(link)
+                .build());
+        }
+
+        return rssLinks;
     }
 }

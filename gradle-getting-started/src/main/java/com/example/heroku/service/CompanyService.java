@@ -88,4 +88,13 @@ public class CompanyService {
 
         return companies;
     }
+
+
+    public void saveCompany() {
+
+    }
+
+    public void saveCompanies() {
+        
+    }
 }

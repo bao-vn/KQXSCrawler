@@ -182,4 +182,12 @@ public class CommonUtils {
 
         return companyWithPrizeList;
     }
+
+    public String parseCompanyNameFromTitleLink(String title) {
+        String name = title.split("RSS feed xổ số ")[1];
+
+        name.replace(" ", "");
+
+        return name;
+    }
 }
