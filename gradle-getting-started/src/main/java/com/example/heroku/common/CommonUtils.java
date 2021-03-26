@@ -106,6 +106,10 @@ public class CommonUtils {
         String[] split = results.split("\n");
         int indexPrizeName = 0;
         for (String item: split) {
+            if (indexPrizeName > 8) {
+                break;
+            }
+
             if (StringUtils.isEmpty(item) || StringUtils.isBlank(item)) {
                 continue;
             }
