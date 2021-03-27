@@ -47,4 +47,11 @@ public class HistoryController {
 
         return new ResponseEntity<>("Hehe, successful", HttpStatus.OK);
     }
+
+    @GetMapping("/doc/sync-all")
+    public ResponseEntity<String> syncHistoryAllDB() throws ExecutionException, InterruptedException {
+        historyService.syncHistoryAllDB();
+
+        return new ResponseEntity<>("Hehe, successful", HttpStatus.OK);
+    }
 }

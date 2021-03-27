@@ -2,7 +2,11 @@ package com.example.heroku.common;
 
 import com.example.heroku.dto.KQXSDto;
 import com.example.heroku.dto.XoSoKienThiet;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -189,8 +193,10 @@ public class CommonUtils {
 
     public String parseCompanyNameFromTitleLink(String title) {
         String name = title.split("RSS feed xổ số ")[1];
-
-        name.replace(" ", "");
+//        ByteArrayOutputStream arrayOutputStream = name.getBytes(StandardCharsets.UTF_8);
+//        OutputStreamWriter out = new OutputStreamWriter(arrayOutputStream);
+//        name = out.getEncoding();
+        name = name.replace(" ", "");
 
         return name;
     }

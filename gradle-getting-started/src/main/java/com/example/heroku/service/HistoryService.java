@@ -27,6 +27,9 @@ public class HistoryService {
     @Autowired
     private FireBaseRepository fireBaseRepository;
 
+    @Autowired
+    private CompanyService companyService;
+
     /**
      * Get list of documentID
      *
@@ -60,6 +63,15 @@ public class HistoryService {
         List<String> docPathsByCollectionID = this.getDocumentPaths(collectionPath);
         for (String doc : docPathsByCollectionID) {
             this.saveHistoryDayByDay(doc, collectionPath);
+        }
+    }
+
+    public void syncHistoryAllDB() throws ExecutionException, InterruptedException {
+        // Get all companies
+        List<String> companiesName = companyService.getCompanyPaths();
+
+        for (String company : companiesName) {
+            this.syncHistoryByCollectionID(company);
         }
     }
 

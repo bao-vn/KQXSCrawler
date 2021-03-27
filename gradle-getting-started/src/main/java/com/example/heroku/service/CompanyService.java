@@ -49,7 +49,7 @@ public class CompanyService {
                 .collect(Collectors.toList());
 
         return docRefs.stream()
-                .map(DocumentReference::getPath)
+                .map(documentReference -> documentReference.getPath().split("/")[1])
                 .collect(Collectors.toList());
     }
 
@@ -93,7 +93,6 @@ public class CompanyService {
 
         return companies;
     }
-
 
     public void saveCompany(String docPath, Company company) throws ExecutionException, InterruptedException {
         Firestore firestore = fireBaseRepository.getFireStore();
