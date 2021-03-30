@@ -99,8 +99,8 @@ public class CommonUtils {
     /**
      * Parse rss data
      *
-     * @param results
-     * @return
+     * @param results String
+     * @return XoSoKienThiet
      */
     public XoSoKienThiet string2KQXSDescription(String results) {
         // Reflection Description
