@@ -2,8 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.common.CommonUtils;
 import com.example.heroku.repository.FireBaseRepository;
-import com.example.heroku.dto.KQXSDto;
-import com.example.heroku.service.HistoryService;
+import com.example.heroku.dto.CrawlerDto;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -18,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,59 +37,59 @@ public class KQXSController {
     private CommonUtils commonUtils;
 
     @RequestMapping("/kqxs/mien-bac")
-    public ResponseEntity<List<KQXSDto>> parseKQXS2Json() throws IOException, FeedException, ParseException {
+    public ResponseEntity<List<CrawlerDto>> parseKQXS2Json() throws IOException, FeedException, ParseException {
         String url = "https://xskt.com.vn/rss-feed/an-giang-xsag.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(new XmlReader((feedUrl)));
 
         // parse to json
-        List<KQXSDto> kqxsDtos = new ArrayList<>();
+        List<CrawlerDto> crawlerDtos = new ArrayList<>();
 
         for (SyndEntry entry : feed.getEntries()) {
             // parse date from link
             // Example: https://xskt.com.vn/xsag/ngay-18-3-2021
             Date date = commonUtils.parseToLocalDateFromLink(entry.getLink());
 
-            KQXSDto kqxsDto = KQXSDto.builder()
+            CrawlerDto crawlerDto = CrawlerDto.builder()
                     .title(entry.getTitle())
                     .results(commonUtils.string2KQXSDescription(entry.getDescription().getValue()))
                     .link(entry.getLink())
                     .publishedDate(date)
                     .build();
 
-            kqxsDtos.add(kqxsDto);
+            crawlerDtos.add(crawlerDto);
         }
 
-        return new ResponseEntity<>(kqxsDtos, HttpStatus.OK);
+        return new ResponseEntity<>(crawlerDtos, HttpStatus.OK);
     }
 
     @RequestMapping("/kqxs/mien-nam")
-    public ResponseEntity<List<KQXSDto>> parseKQXSMienNam() throws IOException, FeedException, ParseException {
+    public ResponseEntity<List<CrawlerDto>> parseKQXSMienNam() throws IOException, FeedException, ParseException {
         String url = "https://xskt.com.vn/rss-feed/mien-nam-xsmn.rss";
         URL feedUrl = new URL(url);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(new XmlReader((feedUrl)));
 
         // parse to json
-        List<KQXSDto> kqxsDtos = new ArrayList<>();
+        List<CrawlerDto> crawlerDtos = new ArrayList<>();
 
         for (SyndEntry entry : feed.getEntries()) {
             // parse date from link
             // Example: https://xskt.com.vn/xsag/ngay-18-3-2021
             Date date = commonUtils.parseToLocalDateFromLink(entry.getLink());
 
-            KQXSDto kqxsDto = KQXSDto.builder()
+            CrawlerDto crawlerDto = CrawlerDto.builder()
                     .title(entry.getTitle())
                     .results(commonUtils.multipleString2KQXSDescription(entry.getDescription().getValue()).get(0))
                     .link(entry.getLink())
                     .publishedDate(date)
                     .build();
 
-            kqxsDtos.add(kqxsDto);
+            crawlerDtos.add(crawlerDto);
         }
 
-        return new ResponseEntity<>(kqxsDtos, HttpStatus.OK);
+        return new ResponseEntity<>(crawlerDtos, HttpStatus.OK);
     }
 
     @RequestMapping("/kqxs/data")

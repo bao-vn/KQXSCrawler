@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KQXSDto {
+public class CrawlerDto {
     /** KẾT QUẢ XỔ SỐ AN GIANG NGÀY 18/03 (Thứ Năm) */
     private String title;
 

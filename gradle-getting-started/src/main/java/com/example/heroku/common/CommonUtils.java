@@ -1,13 +1,10 @@
 package com.example.heroku.common;
 
-import com.example.heroku.dto.KQXSDto;
+import com.example.heroku.dto.CrawlerDto;
+import com.example.heroku.dto.SearchResultDto;
 import com.example.heroku.dto.XoSoKienThiet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,20 +25,20 @@ public class CommonUtils {
     /**
      * Convert KQXSDto to Map<String, Object>
      *
-     * @param kqxsDto KQXSDto
+     * @param crawlerDto KQXSDto
      * @return Map<String, Object>
      */
-    public Map<String, Object> convertToMap(KQXSDto kqxsDto) {
+    public Map<String, Object> convertToMap(CrawlerDto crawlerDto) {
         // title, link, publishedDate, results[9]
         Map<String, Object> kqxs = new HashMap<>();
-        Field[] fields = kqxsDto.getClass().getDeclaredFields();
-        kqxs.put(fields[0].getName(), kqxsDto.getTitle());
-        kqxs.put(fields[1].getName(), kqxsDto.getLink());
-        kqxs.put(fields[2].getName(), kqxsDto.getPublishedDate());
+        Field[] fields = crawlerDto.getClass().getDeclaredFields();
+        kqxs.put(fields[0].getName(), crawlerDto.getTitle());
+        kqxs.put(fields[1].getName(), crawlerDto.getLink());
+        kqxs.put(fields[2].getName(), crawlerDto.getPublishedDate());
 
         // result[9]
         List<String> results = new ArrayList<>();
-        XoSoKienThiet xoSoKienThiet = kqxsDto.getResults();
+        XoSoKienThiet xoSoKienThiet = crawlerDto.getResults();
         results.add(xoSoKienThiet.getGiaiDacBiet());
         results.add(xoSoKienThiet.getGiaiNhat());
         results.add(xoSoKienThiet.getGiaiNhi());
@@ -199,5 +196,20 @@ public class CommonUtils {
         name = name.replace(" ", "");
 
         return name;
+    }
+
+    /**
+     * Is outdate from date?
+     *
+     * @param strDate String
+     * @return boolean
+     */
+    public boolean isOutDate(String strDate) {
+        // over 30 days: now > date + 30
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(strDate, dateTimeFormatter);
+
+        return now.isAfter(date.plusDays(30));
     }
 }
