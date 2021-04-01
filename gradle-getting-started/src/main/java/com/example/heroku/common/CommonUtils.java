@@ -1,8 +1,6 @@
 package com.example.heroku.common;
 
 import com.example.heroku.dto.CrawlerDto;
-import com.example.heroku.dto.SearchResultDto;
-import com.example.heroku.dto.XoSoKienThiet;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -37,17 +35,7 @@ public class CommonUtils {
         kqxs.put(fields[2].getName(), crawlerDto.getPublishedDate());
 
         // result[9]
-        List<String> results = new ArrayList<>();
-        XoSoKienThiet xoSoKienThiet = crawlerDto.getResults();
-        results.add(xoSoKienThiet.getGiaiDacBiet());
-        results.add(xoSoKienThiet.getGiaiNhat());
-        results.add(xoSoKienThiet.getGiaiNhi());
-        results.add(xoSoKienThiet.getGiaiBa());
-        results.add(xoSoKienThiet.getGiaiTu());
-        results.add(xoSoKienThiet.getGiaiNam());
-        results.add(xoSoKienThiet.getGiaiSau());
-        results.add(xoSoKienThiet.getGiaiBay());
-        results.add(xoSoKienThiet.getGiaiTam());
+        List<String> results = crawlerDto.getResults();
         kqxs.put("results", results);
 
         return kqxs;
@@ -99,9 +87,9 @@ public class CommonUtils {
      * @param results String
      * @return XoSoKienThiet
      */
-    public XoSoKienThiet string2KQXSDescription(String results) {
+    public List<String> string2KQXSDescription(String results) {
         // Reflection Description
-        String[] prizeList = new String[9];
+        List<String> prizeList = new ArrayList<>();
 
         // ↵ĐB: 55600↵1: 59302↵2: 78836 - 71711↵3: 57669 - 79931 - 24351 - 86322 - 54511 - 71826↵4: 6225 - 6043 - 3742 - 0666↵5: 0314 - 6945 - 0521 - 6066 - 8579 - 0910↵6: 203 - 330 - 633↵7: 04 - 70 - 40 - 37
         String[] split = results.split("\n");
@@ -125,28 +113,17 @@ public class CommonUtils {
             }
 
             String prize = resultWithTitlePrize[1];
-            prizeList[indexPrizeName] = prize.trim();
+            prizeList.add(prize.replaceAll("\\s+",""));
 
             // GiaiTam
             if (resultWithTitlePrize.length == 3 && indexPrizeName == 7
                     && !this.isEmptyOrWhiteSpaces(resultWithTitlePrize[2])) {
-                prizeList[indexPrizeName + 1] = resultWithTitlePrize[2].trim();
+                prizeList.add(resultWithTitlePrize[2].trim());
             }
             indexPrizeName++;
         }
 
-        return XoSoKienThiet.builder()
-//                .maCongTy(companyName)
-                .GiaiDacBiet(prizeList[0])
-                .GiaiNhat(prizeList[1])
-                .GiaiNhi(prizeList[2])
-                .GiaiBa(prizeList[3])
-                .GiaiTu(prizeList[4])
-                .GiaiNam(prizeList[5])
-                .GiaiSau(prizeList[6])
-                .GiaiBay(prizeList[7])
-                .GiaiTam(prizeList[8])
-                .build();
+        return prizeList;
     }
 
     /**
@@ -156,9 +133,9 @@ public class CommonUtils {
      * @param description contains multiple results
      * @return List<XoSoKienThiet> list of prize for each result
      */
-    public List<XoSoKienThiet> multipleString2KQXSDescription(String description) {
+    public List<List<String>> multipleString2KQXSDescription(String description) {
         // Reflection Description
-        List<XoSoKienThiet> companyWithPrizeList = new ArrayList<>();
+        List<List<String>> companyWithPrizeList = new ArrayList<>();
 
         //  [Cần Thơ] ĐB: 414303 1: 51374 2: 50151 3: 51102 - 31421 4: 77132 - 16282 - 27680 - 24815 - 84724 - 87059 - 08557 5: 2523 6: 6215 - 4816 - 7933 7: 2228: 06 [Đồng Nai] ĐB: 279699 1: 13499 2: 07745 3: 05120 - 77404 4: 05993 - 53444 - 48080 - 89559 - 16888 - 23744 - 12345 5: 7193 6: 7558 - 6461 - 6842 7: 0658: 32 [Sóc Trăng] ĐB: 454847 1: 72330 2: 42590 3: 26544 - 70144 4: 86931 - 79675 - 09519 - 85255 - 58821 - 60418 - 11558 5: 2962 6: 6470 - 6472 - 0714 7: 1278: 47
         String[] splitByCompanyName = description.split("\\[");
@@ -193,7 +170,7 @@ public class CommonUtils {
 //        ByteArrayOutputStream arrayOutputStream = name.getBytes(StandardCharsets.UTF_8);
 //        OutputStreamWriter out = new OutputStreamWriter(arrayOutputStream);
 //        name = out.getEncoding();
-        name = name.replace(" ", "");
+        name = name.replace(" ", "").replaceAll("[^\\x20-\\x7e]", "");
 
         return name;
     }

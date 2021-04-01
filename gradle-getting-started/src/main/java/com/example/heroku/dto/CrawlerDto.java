@@ -1,15 +1,12 @@
 package com.example.heroku.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.google.cloud.firestore.FieldValue;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -30,5 +27,7 @@ public class CrawlerDto {
     private String strPublishedDate;
 
     /** ĐB: 707018 1: 54311 2: 41652 3: 01202 - 78423 4: 53677 - 58657 - 75149 - 51452 - 24755 - 26234 - 63484 5: 6262 6: 9036 - 1564 - 7961 7: 7198: 65 */
-    private XoSoKienThiet results;
+    private List<String> results;
+
+    private FieldValue updatedTime;
 }

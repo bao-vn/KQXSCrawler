@@ -11,6 +11,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +66,7 @@ public class FireBaseRepository {
      */
     public void saveResults(String pathDocument, CrawlerDto crawlerDtos) {
         DocumentReference documentReference = this.firestore.document(pathDocument);
-        // convert to Map<String, Object>: KQXSDto, XoSoKienThiet
-
-        Map<String, Object> kqxs = commonUtils.convertToMap(crawlerDtos);
-        kqxs.put("updatedTime", FieldValue.serverTimestamp());
-        documentReference.set(kqxs);
+        crawlerDtos.setUpdatedTime(FieldValue.serverTimestamp());
+        documentReference.set(crawlerDtos);
     }
 }

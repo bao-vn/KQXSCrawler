@@ -2,7 +2,6 @@ package com.example.heroku.service;
 
 import com.example.heroku.common.CommonUtils;
 import com.example.heroku.dto.CrawlerDto;
-import com.example.heroku.dto.XoSoKienThiet;
 import com.example.heroku.model.Company;
 import com.example.heroku.repository.FireBaseRepository;
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -49,6 +48,7 @@ public class CrawlerService {
      * @return List<KQXSDto> group by companyID
      * @throws IOException URL, XmlReader Exception
      * @throws FeedException
+     * @throws ParseException
      */
     public List<CrawlerDto> getKQXSFromRssLink(String url) throws IOException, FeedException, ParseException {
         URL feedUrl = new URL(url);
@@ -61,7 +61,7 @@ public class CrawlerService {
 
         for (SyndEntry entry : feed.getEntries()) {
             String resultsData = entry.getDescription().getValue();
-            XoSoKienThiet results;
+            List<String> results;
             if (resultsData.contains("\\[")) {
                 results = commonUtils.multipleString2KQXSDescription(resultsData).get(0);
             } else {
