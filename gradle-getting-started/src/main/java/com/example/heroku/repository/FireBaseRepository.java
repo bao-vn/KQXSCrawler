@@ -14,17 +14,29 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-@Service
+@Repository
+@Slf4j
 public class FireBaseRepository {
     private FirebaseDatabase realtimeDB;
     private Firestore firestore;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Autowired
     private CommonUtils commonUtils;
@@ -35,8 +47,7 @@ public class FireBaseRepository {
      * @throws IOException
      */
     public FireBaseRepository() throws IOException {
-        File file = new File("D:\\java\\key.json");
-
+        File file = ResourceUtils.getFile("classpath:firebase/key.json");
         FileInputStream serviceAccount = new FileInputStream(file);
 
         FirebaseOptions options = FirebaseOptions.builder()
