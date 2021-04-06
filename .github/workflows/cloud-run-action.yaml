@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Cloud Run Deployment
+    name: cloudrundeploy
     runs-on: ubuntu-latest
     steps:
 
