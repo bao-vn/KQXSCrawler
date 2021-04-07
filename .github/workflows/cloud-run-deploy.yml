@@ -39,4 +39,3 @@ jobs:
           project: ${{ secrets.GCP_PROJECT_ID }}
       - name: Use gcloud CLI
         run: gcloud info
-          configure-docker: # optional, default is false
