@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@master
+
+      # Runs a single command using the runners shell
+      - name: Setup Google Cloud SDK
+        # You may pin to the exact commit or the version.
+        # uses: mathieu-bour/setup-gcloud@2ed4b72b746826c24010c9cbbdbc22250dc5db9b
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          # Google Cloud SDK to use. If left empty, will use the latest one. On Ubuntu runners, "local" allow to use the pre-installed version of gcloud.
+          version: 'latest'
+          # The service account key to use, base64-encoded.
+          service-account-key: ${{ secrets.GCP_SA_KEY }}
+          # The default Google Cloud project. You can change it later.
+          project: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Use gcloud CLI
+        run: gcloud info
+          configure-docker: # optional, default is false
